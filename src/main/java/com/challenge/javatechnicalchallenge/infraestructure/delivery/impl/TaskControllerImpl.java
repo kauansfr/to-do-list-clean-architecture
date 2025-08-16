@@ -55,12 +55,12 @@ public class TaskControllerImpl implements TaskController {
     }
 
     @Override
-    @DeleteMapping
-    public ResponseEntity<TaskRest> deleteTask(@Valid @RequestBody TaskRest task) throws RuntimeException {
-        if (task.getId() == null) {
+    @DeleteMapping("{id}")
+    public ResponseEntity<TaskRest> deleteTask(@Valid @PathVariable Long id) throws RuntimeException {
+        if (id == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
-        deleteTaskUseCase.execute(task.getId());
+        deleteTaskUseCase.execute(id);
         return ResponseEntity.noContent().build();
     }
 }
