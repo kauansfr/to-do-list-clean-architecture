@@ -1,14 +1,15 @@
 package com.challenge.javatechnicalchallenge.core.tasks;
 
+import java.time.LocalDateTime;
 import lombok.Data;
-
-import java.time.LocalDate;
 
 @Data
 public class Task {
     private Long id;
-    private String name;
+    private String title;
     private String description;
-    private LocalDate creationDate;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+    private LocalDateTime completedAt;
     private String status;
 }
