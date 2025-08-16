@@ -13,5 +13,5 @@ public interface TaskController {
 
     ResponseEntity<TaskRest> updateTask(TaskRest task) throws RuntimeException;
 
-    ResponseEntity<TaskRest> deleteTask(TaskRest task) throws RuntimeException;
+    ResponseEntity<TaskRest> deleteTask(Long id) throws RuntimeException;
 }
