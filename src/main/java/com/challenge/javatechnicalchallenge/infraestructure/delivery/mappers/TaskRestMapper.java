@@ -8,9 +8,11 @@ public class TaskRestMapper {
         if (domain == null) return null;
         TaskRest taskRest = new TaskRest();
         taskRest.setId(domain.getId());
-        taskRest.setName(domain.getName());
+        taskRest.setTitle(domain.getTitle());
         taskRest.setDescription(domain.getDescription());
-        taskRest.setCreationDate(domain.getCreationDate());
+        taskRest.setCreatedAt(domain.getCreatedAt());
+        taskRest.setUpdatedAt(domain.getUpdatedAt());
+        taskRest.setCompletedAt(domain.getCompletedAt());
         taskRest.setStatus(domain.getStatus());
 
         return taskRest;
@@ -20,9 +22,11 @@ public class TaskRestMapper {
         if (rest == null) return null;
         Task task = new Task();
         task.setId(rest.getId());
-        task.setName(rest.getName());
+        task.setTitle(rest.getTitle());
         task.setDescription(rest.getDescription());
-        task.setCreationDate(rest.getCreationDate());
+        task.setCreatedAt(rest.getCreatedAt());
+        task.setUpdatedAt(rest.getUpdatedAt());
+        task.setCompletedAt(rest.getCompletedAt());
         task.setStatus(rest.getStatus());
 
         return task;
