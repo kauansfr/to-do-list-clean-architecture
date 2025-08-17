@@ -1,0 +1,68 @@
+name: CD
+
+on:
+  workflow_run:
+    workflows: [ CI ]
+    types: [ completed ]
+    branches: [ main ]
+
+jobs:
+  deploy:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Oracle JDK 21
+        uses: oracle-actions/setup-java@v1
+        with:
+          website: oracle.com
+          release: 21
+
+      - name: Make Maven Wrapper executable
+        run: chmod +x mvnw
+
+      - name: Build
+        run: ./mvnw -B clean package
+
+      - name: Copy artifact to EC2
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          source: "target/*.jar"
+          target: "/opt/todolist/releases"
+          strip_components: 1
+          overwrite: true
+
+      - name: Restart service on EC2
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            set -e
+            sudo mkdir -p /opt/todolist/releases
+            sudo chown -R $USER:$USER /opt/todolist
+            LATEST_JAR=$(ls -t /opt/todolist/releases/*.jar | head -n1)
+            if [ -z "$LATEST_JAR" ]; then
+              echo "No JAR in /opt/todolist/releases, copying from upload path"
+              LATEST_JAR=$(ls -t *.jar | head -n1 || true)
+            fi
+            if [ -z "$LATEST_JAR" ]; then
+              echo "No JAR found to deploy" >&2
+              exit 1
+            fi
+            cp "$LATEST_JAR" /opt/todolist/app.jar
+            sudo systemctl daemon-reload
+            sudo systemctl restart todolist
+            sleep 2
+            if ! sudo systemctl is-active --quiet todolist; then
+              echo "Service failed to start. Recent logs:"
+              sudo journalctl -u todolist -n 200 --no-pager
+              exit 1
+            fi
+            sudo systemctl status todolist --no-pager -l
