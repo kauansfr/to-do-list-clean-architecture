@@ -13,6 +13,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Make Maven Wrapper executable
+        run: chmod +x mvnw
+
       - name: Set up Oracle JDK 21
         uses: oracle-actions/setup-java@v1
         with:
