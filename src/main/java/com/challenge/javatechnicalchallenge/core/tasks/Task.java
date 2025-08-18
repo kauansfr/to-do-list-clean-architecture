@@ -1,6 +1,9 @@
 package com.challenge.javatechnicalchallenge.core.tasks;
 
 import java.time.LocalDateTime;
+
+import com.challenge.javatechnicalchallenge.core.tasks.enums.TaskStatus;
+
 import lombok.Data;
 
 @Data
@@ -11,5 +14,5 @@ public class Task {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private LocalDateTime completedAt;
-    private String status;
+    private TaskStatus status;
 }

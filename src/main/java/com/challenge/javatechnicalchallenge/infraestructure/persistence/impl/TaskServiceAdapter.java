@@ -11,6 +11,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 import com.challenge.javatechnicalchallenge.core.tasks.Task;
+import com.challenge.javatechnicalchallenge.core.tasks.enums.TaskStatus;
 import com.challenge.javatechnicalchallenge.core.tasks.ports.TaskRepositoryPort;
 
 import lombok.AllArgsConstructor;
@@ -22,30 +23,35 @@ public class TaskServiceAdapter implements TaskRepositoryPort {
 
     private static final class TaskRowMapper implements RowMapper<Task> {
         @Override
-        public Task mapRow(ResultSet rs, int rowNum) throws SQLException {
-            Task t = new Task();
-            t.setId(rs.getLong("TaskId"));
-            t.setTitle(rs.getString("Title"));
-            t.setDescription(rs.getString("Description"));
-            Timestamp createdAt = rs.getTimestamp("CreatedAt");
-            t.setCreatedAt(createdAt != null ? createdAt.toLocalDateTime() : null);
-            Timestamp updatedAt = rs.getTimestamp("UpdatedAt");
-            t.setUpdatedAt(updatedAt != null ? updatedAt.toLocalDateTime() : null);
-            Timestamp completedAt = rs.getTimestamp("CompletedAt");
-            t.setCompletedAt(completedAt != null ? completedAt.toLocalDateTime() : null);
-            t.setStatus(rs.getString("Status"));
-            return t;
+        public Task mapRow(ResultSet sqlColumnResult, int rowNum) throws SQLException {
+            Task task = new Task();
+            task.setId(sqlColumnResult.getLong("TaskId"));
+            task.setTitle(sqlColumnResult.getString("Title"));
+            task.setDescription(sqlColumnResult.getString("Description"));
+            Timestamp createdAt = sqlColumnResult.getTimestamp("CreatedAt");
+            task.setCreatedAt(createdAt != null ? createdAt.toLocalDateTime() : null);
+            Timestamp updatedAt = sqlColumnResult.getTimestamp("UpdatedAt");
+            task.setUpdatedAt(updatedAt != null ? updatedAt.toLocalDateTime() : null);
+            Timestamp completedAt = sqlColumnResult.getTimestamp("CompletedAt");
+            task.setCompletedAt(completedAt != null ? completedAt.toLocalDateTime() : null);
+            task.setStatus(TaskStatus.toStatusEnum(sqlColumnResult.getString("Status")));
+            return task;
         }
+    }
+
+    private static String toDbStatus(TaskStatus status) {
+        if (status == null) return null;
+        return status.getFormattedTitle();
     }
 
     @Override
     public void save(Task task) {
         String sql = "INSERT INTO dbo.Tasks (Title, Description, Status)\n" +
                 "VALUES (?, ?, ?);";
-        jdbcTemplate.update(sql,
-                task.getTitle(),
-                task.getDescription(),
-                task.getStatus());
+    jdbcTemplate.update(sql,
+        task.getTitle(),
+        task.getDescription(),
+        toDbStatus(task.getStatus()));
     }
 
     @Override
@@ -57,11 +63,11 @@ public class TaskServiceAdapter implements TaskRepositoryPort {
 
     @Override
     public void update(Task task) {
-        String sql = "UPDATE dbo.Tasks\n SET Title = ?,\n Description = ?,\n Status = ?,\n UpdatedAt = SYSUTCDATETIME()\n WHERE TaskId = ?";
+    String sql = "UPDATE dbo.Tasks\n SET Title = ?,\n Description = ?,\n Status = ?,\n UpdatedAt = SYSUTCDATETIME()\n WHERE TaskId = ?";
         jdbcTemplate.update(sql,
                 task.getTitle(),
                 task.getDescription(),
-                task.getStatus(),
+                toDbStatus(task.getStatus()),
                 task.getId());
     }
 
