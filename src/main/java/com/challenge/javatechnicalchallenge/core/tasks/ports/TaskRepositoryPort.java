@@ -11,7 +11,11 @@ public interface TaskRepositoryPort {
 
     void update(Task task);
 
+    void updateCompletedAt(Long id);
+
     void deleteById(Long id);
 
-    Boolean existsById(Long id);
+    Task findById(Long id);
+
+    boolean existsById(Long id);
 }

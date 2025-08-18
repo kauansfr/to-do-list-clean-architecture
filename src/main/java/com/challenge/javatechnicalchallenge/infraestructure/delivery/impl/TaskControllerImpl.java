@@ -64,22 +64,23 @@ public class TaskControllerImpl implements TaskController {
     }
 
     @Override
-    @PutMapping
-    @Operation(summary = "Atualizar tarefa", description = "Atualiza uma tarefa existente")
+    @PutMapping("/{id}")
+    @Operation(summary = "Atualizar tarefa", description = "Atualiza uma tarefa existente. O atributo \"status\" deve receber \"Não iniciado\", \"Em progresso\" ou \"Concluído\"")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Tarefa atualizada"),
         @ApiResponse(responseCode = "400", description = "ID ausente ou inválido", content = @Content)
     })
-    public ResponseEntity<TaskRest> updateTask(@Valid @RequestBody TaskRest task) throws RuntimeException {
-        if (task.getId() == null) {
+    public ResponseEntity<TaskRest> updateTask(@PathVariable Long id, @Valid @RequestBody TaskRest task) throws RuntimeException {
+        if (id == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
-        updateTaskUseCase.execute(task.getId(), TaskRestMapper.toDomain(task));
+
+        updateTaskUseCase.execute(id, TaskRestMapper.toDomain(task));
         return ResponseEntity.ok(task);
     }
 
     @Override
-    @DeleteMapping("{id}")
+    @DeleteMapping("/{id}")
     @Operation(summary = "Excluir tarefa", description = "Exclui uma tarefa pelo ID")
     @ApiResponses({
         @ApiResponse(responseCode = "204", description = "Tarefa excluída", content = @Content),
