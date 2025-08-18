@@ -3,7 +3,8 @@ IF OBJECT_ID('dbo.Tasks', 'U') IS NULL
         TaskId INT IDENTITY(1,1) NOT NULL,
         Title NVARCHAR(255) NOT NULL,
         Description NVARCHAR(MAX) NULL,
-        CreatedAt DATETIME2(3) NOT NULL CONSTRAINT DF_Tasks_CreatedAt DEFAULT (SYSUTCDATETIME()),
+        CreatedAt DATETIME2(3) NOT NULL
+        CONSTRAINT DF_Tasks_CreatedAt DEFAULT (SYSUTCDATETIME()),
         UpdatedAt DATETIME2(3) NULL,
         CompletedAt DATETIME2(3) NULL,
         Status NVARCHAR(20) NOT NULL,
