@@ -6,6 +6,8 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+
+import com.challenge.javatechnicalchallenge.core.tasks.enums.TaskStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,7 +31,6 @@ import com.challenge.javatechnicalchallenge.infraestructure.delivery.rest.TaskRe
 
 @ExtendWith(MockitoExtension.class)
 class TaskControllerImplTest {
-
     @Mock
     private CreateTaskUseCase createTaskUseCase;
     @Mock
@@ -50,7 +51,7 @@ class TaskControllerImplTest {
         sampleRest.setId(1L);
         sampleRest.setTitle("Desenvolver Pipeline CI/CD");
         sampleRest.setDescription("Estudar os conceitos de CI/CD e Github Actions");
-        sampleRest.setStatus("Não iniciado");
+        sampleRest.setStatus(TaskStatus.NOT_STARTED);
         sampleRest.setCreatedAt(LocalDateTime.now());
     }
 
@@ -75,14 +76,14 @@ class TaskControllerImplTest {
         t1.setId(10L);
         t1.setTitle("Tarefa 1");
         t1.setDescription("Desc 1");
-        t1.setStatus("Em progresso");
+        t1.setStatus(TaskStatus.IN_PROGRESS);
         t1.setCreatedAt(LocalDateTime.now().minusHours(1));
 
         Task t2 = new Task();
         t2.setId(20L);
         t2.setTitle("Tarefa 2");
         t2.setDescription("Desc 2");
-        t2.setStatus("Concluído");
+        t2.setStatus(TaskStatus.COMPLETED);
         t2.setCreatedAt(LocalDateTime.now().minusHours(2));
 
         when(listTasksUseCase.execute()).thenReturn(List.of(t1, t2));
@@ -106,7 +107,7 @@ class TaskControllerImplTest {
 
     @Test
     void updateTask_shouldReturn200_andCallUseCase() {
-        ResponseEntity<TaskRest> response = controller.updateTask(sampleRest);
+        ResponseEntity<TaskRest> response = controller.updateTask(1L, sampleRest);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(sampleRest, response.getBody());
@@ -125,9 +126,9 @@ class TaskControllerImplTest {
     void updateTask_whenIdMissing_shouldReturn400_andNotCallUseCase() {
         TaskRest body = new TaskRest();
         body.setTitle("Sem ID");
-        body.setStatus("Não iniciado");
+        body.setStatus(TaskStatus.NOT_STARTED);
 
-        ResponseEntity<TaskRest> response = controller.updateTask(body);
+        ResponseEntity<TaskRest> response = controller.updateTask(body.getId(), body);
 
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         assertNull(response.getBody());
