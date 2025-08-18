@@ -31,7 +31,6 @@ import com.challenge.javatechnicalchallenge.infraestructure.delivery.rest.TaskRe
 
 @ExtendWith(MockitoExtension.class)
 class TaskControllerImplTest {
-
     @Mock
     private CreateTaskUseCase createTaskUseCase;
     @Mock

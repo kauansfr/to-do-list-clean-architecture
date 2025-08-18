@@ -1,5 +1,6 @@
 package com.challenge.javatechnicalchallenge.core.tasks.enums;
 
+import com.challenge.javatechnicalchallenge.core.tasks.exception.TaskWithoutAllowedStatusException;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Getter;
@@ -31,7 +32,8 @@ public enum TaskStatus {
             case "Concluído":
                 return COMPLETED;
             default:
-                throw new IllegalArgumentException("Status inválido: " + status);
+                throw new TaskWithoutAllowedStatusException("Status '" + status + "' não permitido! " +
+                        "Valores aceitos no status da tarefa: 'Não iniciado', 'Em progresso' ou 'Concluído'.");
         }
     }
 }
