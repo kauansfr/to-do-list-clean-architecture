@@ -1,6 +1,5 @@
 package com.challenge.javatechnicalchallenge.infraestructure.persistence.impl;
 
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -46,29 +45,41 @@ public class TaskServiceAdapter implements TaskRepositoryPort {
 
     @Override
     public void save(Task task) {
-        String sql = "INSERT INTO dbo.Tasks (Title, Description, Status)\n" +
-                "VALUES (?, ?, ?);";
-    jdbcTemplate.update(sql,
-        task.getTitle(),
-        task.getDescription(),
-        toDbStatus(task.getStatus()));
+        String sql = "INSERT INTO dbo.Tasks (Title, Description, Status)\n"
+                + "VALUES (?, ?, ?);";
+        jdbcTemplate.update(sql,
+                task.getTitle(),
+                task.getDescription(),
+                toDbStatus(task.getStatus()));
     }
 
     @Override
     public List<Task> findAll() {
-        String sql = "SELECT TaskId, Title, Description, CreatedAt, UpdatedAt, CompletedAt, Status\n" +
-                "FROM dbo.Tasks";
+        String sql = "SELECT TaskId, Title, Description, CreatedAt, UpdatedAt, CompletedAt, Status\n"
+                + "FROM dbo.Tasks";
         return jdbcTemplate.query(sql, new TaskRowMapper());
     }
 
     @Override
     public void update(Task task) {
-    String sql = "UPDATE dbo.Tasks\n SET Title = ?,\n Description = ?,\n Status = ?,\n UpdatedAt = SYSUTCDATETIME()\n WHERE TaskId = ?";
+        String sql = "UPDATE dbo.Tasks\n SET Title = ?,\n Description = ?,\n Status = ?,\n UpdatedAt = SYSUTCDATETIME()\n WHERE TaskId = ?";
         jdbcTemplate.update(sql,
                 task.getTitle(),
                 task.getDescription(),
                 toDbStatus(task.getStatus()),
                 task.getId());
+    }
+
+    @Override
+    public void updateCompletedAt(Long id) {
+        String sql = "UPDATE dbo.Tasks SET CompletedAt = SYSUTCDATETIME() WHERE TaskId = ?";
+        jdbcTemplate.update(sql, id);
+    }
+
+    @Override
+    public Task findById(Long id) {
+        String sql = "SELECT * FROM dbo.Tasks WHERE TaskId = ?";
+        return jdbcTemplate.queryForObject(sql, new TaskRowMapper(), id);
     }
 
     @Override
@@ -78,7 +89,7 @@ public class TaskServiceAdapter implements TaskRepositoryPort {
     }
 
     @Override
-    public Boolean existsById(Long id) {
+    public boolean existsById(Long id) {
         String sql = "SELECT COUNT(1) FROM dbo.Tasks WHERE TaskId = ?";
         Integer count = jdbcTemplate.queryForObject(sql, Integer.class, id);
         return count != null && count > 0;

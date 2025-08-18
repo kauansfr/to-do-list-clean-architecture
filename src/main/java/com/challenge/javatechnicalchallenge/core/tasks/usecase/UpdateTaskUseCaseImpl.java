@@ -15,15 +15,18 @@ public class UpdateTaskUseCaseImpl implements UpdateTaskUseCase {
     @Override
     public void execute(Long id, Task task) {
         if (id == null || !repository.existsById(id)) {
-            throw new TaskNotFoundException("Tarefa não encontrada para o id=" + id);
+            throw new TaskNotFoundException("Tarefa não encontrada para o id: " + id);
+        }
+
+        if (task.getStatus().equals(TaskStatus.COMPLETED)) {
+            Task oldTask = repository.findById(id);
+
+            if (oldTask.getCompletedAt() == null) {
+                repository.updateCompletedAt(id);
+            }
         }
 
         task.setId(id);
-
-        if (task.getStatus() == TaskStatus.COMPLETED) {
-            repository.updateCompletedAt(id);
-        }
-
         repository.update(task);
     }
 }
