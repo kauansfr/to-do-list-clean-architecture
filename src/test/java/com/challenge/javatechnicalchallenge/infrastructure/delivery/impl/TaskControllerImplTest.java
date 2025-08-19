@@ -1,4 +1,4 @@
-package com.challenge.javatechnicalchallenge.infraestructure.delivery.impl;
+package com.challenge.javatechnicalchallenge.infrastructure.delivery.impl;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -27,7 +27,7 @@ import com.challenge.javatechnicalchallenge.core.tasks.usecase.CreateTaskUseCase
 import com.challenge.javatechnicalchallenge.core.tasks.usecase.DeleteTaskUseCase;
 import com.challenge.javatechnicalchallenge.core.tasks.usecase.ListTasksUseCase;
 import com.challenge.javatechnicalchallenge.core.tasks.usecase.UpdateTaskUseCase;
-import com.challenge.javatechnicalchallenge.infraestructure.delivery.rest.TaskRest;
+import com.challenge.javatechnicalchallenge.infrastructure.delivery.rest.TaskRest;
 
 @ExtendWith(MockitoExtension.class)
 class TaskControllerImplTest {
@@ -46,6 +46,7 @@ class TaskControllerImplTest {
     private TaskRest sampleRest;
 
     @BeforeEach
+    @SuppressWarnings("unused")
     void setUp() {
         sampleRest = new TaskRest();
         sampleRest.setId(1L);
@@ -56,11 +57,23 @@ class TaskControllerImplTest {
     }
 
     @Test
-    void createTask_shouldReturn201_andCallUseCaseWithMappedDomain() {
+    void createTask_shouldReturn201_andBodyFromUseCase() {
+        Task saved = new Task();
+        saved.setId(100L);
+        saved.setTitle(sampleRest.getTitle());
+        saved.setDescription(sampleRest.getDescription());
+        saved.setStatus(sampleRest.getStatus());
+        saved.setCreatedAt(LocalDateTime.now());
+        when(createTaskUseCase.execute(org.mockito.ArgumentMatchers.any(Task.class))).thenReturn(saved);
+
         ResponseEntity<TaskRest> response = controller.createTask(sampleRest);
 
-        assertEquals(HttpStatus.CREATED, response.getStatusCode());
-        assertEquals(sampleRest, response.getBody());
+    assertEquals(HttpStatus.CREATED, response.getStatusCode());
+    TaskRest body = response.getBody();
+    assertNotNull(body);
+    assertEquals(saved.getId(), body.getId());
+    assertEquals(saved.getTitle(), body.getTitle());
+    assertEquals(saved.getStatus(), body.getStatus());
 
         ArgumentCaptor<Task> captor = ArgumentCaptor.forClass(Task.class);
         verify(createTaskUseCase, times(1)).execute(captor.capture());
@@ -90,11 +103,12 @@ class TaskControllerImplTest {
 
         ResponseEntity<List<TaskRest>> response = controller.getTasks();
 
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertNotNull(response.getBody());
-        assertEquals(2, response.getBody().size());
-        TaskRest r1 = response.getBody().get(0);
-        TaskRest r2 = response.getBody().get(1);
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    List<TaskRest> body = response.getBody();
+    assertNotNull(body);
+    assertEquals(2, body.size());
+    TaskRest r1 = body.get(0);
+    TaskRest r2 = body.get(1);
         assertEquals(t1.getId(), r1.getId());
         assertEquals(t1.getTitle(), r1.getTitle());
         assertEquals(t1.getStatus(), r1.getStatus());
@@ -106,16 +120,29 @@ class TaskControllerImplTest {
     }
 
     @Test
-    void updateTask_shouldReturn200_andCallUseCase() {
+    void updateTask_shouldReturn200_andBodyFromUseCase() {
+        Task updated = new Task();
+        updated.setId(1L);
+        updated.setTitle(sampleRest.getTitle());
+        updated.setDescription(sampleRest.getDescription());
+        updated.setStatus(sampleRest.getStatus());
+        updated.setUpdatedAt(LocalDateTime.now());
+        when(updateTaskUseCase.execute(org.mockito.ArgumentMatchers.eq(1L), org.mockito.ArgumentMatchers.any(Task.class)))
+                .thenReturn(updated);
+
         ResponseEntity<TaskRest> response = controller.updateTask(1L, sampleRest);
 
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(sampleRest, response.getBody());
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    TaskRest body = response.getBody();
+    assertNotNull(body);
+    assertEquals(updated.getId(), body.getId());
+    assertEquals(updated.getTitle(), body.getTitle());
+    assertEquals(updated.getStatus(), body.getStatus());
 
         ArgumentCaptor<Long> idCaptor = ArgumentCaptor.forClass(Long.class);
         ArgumentCaptor<Task> taskCaptor = ArgumentCaptor.forClass(Task.class);
         verify(updateTaskUseCase, times(1)).execute(idCaptor.capture(), taskCaptor.capture());
-        assertEquals(sampleRest.getId(), idCaptor.getValue());
+        assertEquals(1L, idCaptor.getValue());
         Task sent = taskCaptor.getValue();
         assertEquals(sampleRest.getTitle(), sent.getTitle());
         assertEquals(sampleRest.getDescription(), sent.getDescription());

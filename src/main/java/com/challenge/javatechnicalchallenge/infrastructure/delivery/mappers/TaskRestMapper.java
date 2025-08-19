@@ -1,10 +1,10 @@
-package com.challenge.javatechnicalchallenge.infraestructure.delivery.mappers;
+package com.challenge.javatechnicalchallenge.infrastructure.delivery.mappers;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 
 import com.challenge.javatechnicalchallenge.core.tasks.Task;
-import com.challenge.javatechnicalchallenge.infraestructure.delivery.rest.TaskRest;
+import com.challenge.javatechnicalchallenge.infrastructure.delivery.rest.TaskRest;
 
 public class TaskRestMapper {
     private static final ZoneId UTC = ZoneId.of("UTC");

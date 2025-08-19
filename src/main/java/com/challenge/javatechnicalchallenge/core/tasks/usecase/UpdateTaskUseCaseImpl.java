@@ -13,20 +13,26 @@ public class UpdateTaskUseCaseImpl implements UpdateTaskUseCase {
     }
 
     @Override
-    public void execute(Long id, Task task) {
+    public Task execute(Long id, Task task) {
         if (id == null || !repository.existsById(id)) {
             throw new TaskNotFoundException("Tarefa não encontrada para o id: " + id);
         }
 
-        if (task.getStatus().equals(TaskStatus.COMPLETED)) {
-            Task oldTask = repository.findById(id);
+        Task oldTask = repository.findById(id);
+        boolean isTaskCompleted = TaskStatus.COMPLETED.equals(task.getStatus());
+        boolean hasOldTaskCompletedAt = oldTask.getCompletedAt() != null;
 
-            if (oldTask.getCompletedAt() == null) {
+        if (isTaskCompleted) {
+            if (!hasOldTaskCompletedAt) {
                 repository.updateCompletedAt(id);
+            }
+        } else {
+            if (hasOldTaskCompletedAt) {
+                repository.clearCompletedAt(id);
             }
         }
 
         task.setId(id);
-        repository.update(task);
+        return repository.update(task);
     }
 }

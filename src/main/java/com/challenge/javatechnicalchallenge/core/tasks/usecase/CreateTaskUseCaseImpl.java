@@ -12,11 +12,13 @@ public class CreateTaskUseCaseImpl implements CreateTaskUseCase {
     }
 
     @Override
-    public void execute(Task task) {
-        repository.save(task);
+    public Task execute(Task task) {
+        Task saved = repository.save(task);
 
-        if (task.getStatus().equals(TaskStatus.COMPLETED)) {
-            repository.updateCompletedAt(task.getId());
+    if (TaskStatus.COMPLETED.equals(saved.getStatus())) {
+            repository.updateCompletedAt(saved.getId());
+            saved = repository.findById(saved.getId());
         }
+        return saved;
     }
 }
