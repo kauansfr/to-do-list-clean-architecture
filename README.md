@@ -1,12 +1,27 @@
----
-title: To-Do List API (Java Technical Challenge)
-description: API RESTful de To-Do List em Spring Boot com Clean Architecture
-category: Negócio/Core, Infraestrutura
----
-
 # To-Do List API
 
 Aplicação Spring Boot 3.x (Java 21) seguindo Clean Architecture para gerenciar tarefas (To-Do List), com JDBC (SQL Server), documentação OpenAPI/Swagger e CI/CD (AWS - EC2, RDS).
+
+## Sumário
+
+- [Visão geral](#visão-geral)
+- [Stack](#stack)
+- [Como executar (local)](#como-executar-local)
+- [Deploy (CI/CD, EC2 e RDS)](#deploy-cicd-ec2-e-rds)
+    - [CI/CD no GitHub Actions](#cicd-no-github-actions)
+    - [Setup da EC2 (Ubuntu + systemd)](#setup-da-ec2-ubuntu--systemd)
+    - [RDS (SQL Server) e criação do banco](#rds-sql-server-e-criação-do-banco)
+    - [Resumo do fluxo de deploy](#resumo-do-fluxo-de-deploy)
+- [Arquitetura e pacotes](#arquitetura-e-pacotes)
+    - [Diagrama de sequência](#diagrama-de-sequência)
+- [Modelo de dados](#modelo-de-dados)
+- [Endpoints](#endpoints)
+- [Services (Casos de Uso) — Métodos e Complexidade](#services-casos-de-uso--métodos-e-complexidade)
+    - [Lógicas e Regras de Negócio](#lógicas-e-regras-de-negócio)
+- [Parâmetros, Retornos e Validações](#parâmetros-retornos-e-validações)
+- [Exemplos de uso (HTTP)](#exemplos-de-uso-http)
+- [Troubleshooting](#troubleshooting)
+- [OpenAPI](#openapi)
 
 ## Visão geral
 
