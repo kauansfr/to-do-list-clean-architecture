@@ -1,10 +1,10 @@
-package com.challenge.javatechnicalchallenge.infraestructure.delivery;
+package com.challenge.javatechnicalchallenge.infrastructure.delivery;
 
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 
-import com.challenge.javatechnicalchallenge.infraestructure.delivery.rest.TaskRest;
+import com.challenge.javatechnicalchallenge.infrastructure.delivery.rest.TaskRest;
 
 public interface TaskController {
     ResponseEntity<TaskRest> createTask(TaskRest task) throws RuntimeException;
