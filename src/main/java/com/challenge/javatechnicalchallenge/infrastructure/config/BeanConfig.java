@@ -1,4 +1,4 @@
-package com.challenge.javatechnicalchallenge.infraestructure.config;
+package com.challenge.javatechnicalchallenge.infrastructure.config;
 
 import com.challenge.javatechnicalchallenge.core.tasks.ports.TaskRepositoryPort;
 import com.challenge.javatechnicalchallenge.core.tasks.usecase.*;

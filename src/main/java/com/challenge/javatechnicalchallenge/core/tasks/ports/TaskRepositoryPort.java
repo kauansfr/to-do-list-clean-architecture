@@ -5,13 +5,14 @@ import java.util.List;
 import com.challenge.javatechnicalchallenge.core.tasks.Task;
 
 public interface TaskRepositoryPort {
-    void save(Task task);
+    Task save(Task task);
 
     List<Task> findAll();
 
-    void update(Task task);
+    Task update(Task task);
 
     void updateCompletedAt(Long id);
+    void clearCompletedAt(Long id);
 
     void deleteById(Long id);
 

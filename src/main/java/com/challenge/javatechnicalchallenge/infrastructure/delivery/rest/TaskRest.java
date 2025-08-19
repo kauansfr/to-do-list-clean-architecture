@@ -1,4 +1,4 @@
-package com.challenge.javatechnicalchallenge.infraestructure.delivery.rest;
+package com.challenge.javatechnicalchallenge.infrastructure.delivery.rest;
 
 import java.time.LocalDateTime;
 
