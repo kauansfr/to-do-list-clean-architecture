@@ -1,4 +1,4 @@
-package com.challenge.javatechnicalchallenge.infraestructure.config;
+package com.challenge.javatechnicalchallenge.infrastructure.config;
 
 import org.springframework.context.annotation.Configuration;
 

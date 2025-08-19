@@ -32,8 +32,7 @@ public enum TaskStatus {
             case "Concluído":
                 return COMPLETED;
             default:
-                throw new TaskWithoutAllowedStatusException("Status '" + status + "' não permitido! " +
-                        "Valores aceitos no status da tarefa: 'Não iniciado', 'Em progresso' ou 'Concluído'.");
+                throw new TaskWithoutAllowedStatusException();
         }
     }
 }
