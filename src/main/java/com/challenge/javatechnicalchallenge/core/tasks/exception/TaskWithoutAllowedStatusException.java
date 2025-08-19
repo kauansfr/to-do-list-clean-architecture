@@ -1,6 +1,9 @@
 package com.challenge.javatechnicalchallenge.core.tasks.exception;
 
 public class TaskWithoutAllowedStatusException extends RuntimeException {
+    public TaskWithoutAllowedStatusException() {
+    }
+
     public TaskWithoutAllowedStatusException(String message) {
         super(message);
     }
